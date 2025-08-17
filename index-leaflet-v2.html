@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>L.Donut - Leaflet V2</title>
+
+  <link href="https://unpkg.com/leaflet@2.0.0-alpha.1/dist/leaflet.css" rel="stylesheet"/>
+  <script type="importmap">
+    {
+        "imports": {
+            "leaflet": "https://unpkg.com/leaflet@2.0.0-alpha.1/dist/leaflet.js",
+            "leaflet-donut": "./src/L.Donut-leaflet-v2.js"
+        }
+    }
+  </script>
+
+  <style>
+    html, body{
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    #map{
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+</head>
+<body>
+  <div id="map"></div>
+
+  <script type="module">
+      import {LeafletMap, TileLayer, Canvas} from 'leaflet';
+      import {Donut} from 'leaflet-donut';
+
+      const map = new LeafletMap('map',{
+          // renderer: new Canvas()
+      }).setView([47.506997, 9.759292], 13);
+
+      new TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      const donut = new Donut(map.getCenter(), {
+          radius: 2000,
+          innerRadius: 1000,
+          innerRadiusAsPercent: false,
+      }).addTo(map);
+
+  </script>
+</body>
+</html>

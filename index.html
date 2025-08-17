@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>L.Donut</title>
+  <title>L.Donut - Leaflet V1</title>
 
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
   <script src="src/L.Donut.js"></script>
 
   <style>
@@ -27,7 +27,7 @@
 
   <script>
       var map = L.map('map',{
-          //renderer: L.canvas()
+          renderer: L.canvas()
       }).setView([47.506997, 9.759292], 13);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
