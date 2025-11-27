@@ -11,7 +11,7 @@
  * L.annulus([50.5, 30.5], {radius: 200, innerRadius: 100, innerRadiusAsPercent: false}).addTo(map);
  * ```
  */
-L.Annulus = L.Circle.extend({
+export var Annulus = L.Annulus = L.Circle.extend({
 
     initialize: function (latlng, options, legacyOptions) {
         L.Circle.prototype.initialize.call(this, latlng, options, legacyOptions);
@@ -117,6 +117,10 @@ L.Annulus = L.Circle.extend({
 L.annulus = function (latlng, options) {
     return new L.Annulus(latlng, options);
 };
+
+export function annulus(latlng, options) {
+  return new Annulus(latlng, options);
+}
 
 L.SVG.include({
     _updateAnnulus: function (layer) {
