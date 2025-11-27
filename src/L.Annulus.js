@@ -1,62 +1,61 @@
-import {Circle, CRS, SVG, Canvas} from 'leaflet';
-
 /*
- * @class Donut
+ * @class Annulus
+ * @aka L.Annulus
  * @inherits Circle
  *
- * A class for drawing donut overlays on a map. Extends `Circle`.
+ * A class for drawing annulus overlays on a map. Extends `Circle`.
  *
  * @example
  *
  * ```js
- * new Donut([50.5, 30.5], {radius: 200, innerRadius: 100, innerRadiusAsPercent: false}).addTo(map);
+ * L.annulus([50.5, 30.5], {radius: 200, innerRadius: 100, innerRadiusAsPercent: false}).addTo(map);
  * ```
  */
-export class Donut extends Circle {
+L.Annulus = L.Circle.extend({
 
-    initialize(latlng, options, legacyOptions) {
-        Circle.prototype.initialize.call(this, latlng, options, legacyOptions);
+    initialize: function (latlng, options, legacyOptions) {
+        L.Circle.prototype.initialize.call(this, latlng, options, legacyOptions);
 
         if (isNaN(this.options.innerRadius)) { throw new Error('Inner radius cannot be NaN'); }
         if (this.options.innerRadius >= this.options.radius) { throw new Error('Outer radius must be greater then the inner radius'); }
 
         // @section
-        // @aka Donut options
+        // @aka Annulus options
         // @option innerRadius: Number; Radius of the inner circle, in meters.
         this._mInnerRadius = this.options.innerRadius;
 
-    }
+    },
 
-    setRadius(radius) {
+    setRadius: function (radius) {
         if (this._mInnerRadius >= radius) { throw new Error('Outer radius must be greater then the inner radius'); }
-        return Circle.prototype.setRadius.call(this, radius);
-    }
+        return L.Circle.prototype.setRadius.call(this, radius);
+    },
 
 
     // @method setInnerRadius(radius: Number): this
-    // Sets the inner radius of the donut. Units are in meters or percent.
-    setInnerRadius(radius) {
+    // Sets the inner radius of the annulus. Units are in meters or percent.
+    setInnerRadius: function (radius) {
         if (radius > this._mRadius) { throw new Error('Inner radius must be smaller then the outer radius'); }
         this.options.innerRadius = this._mInnerRadius = radius;
         return this.redraw();
-    }
+    },
 
     // @method getInnerRadius(): Number
-    // Returns the current inner radius of the donut. Units are in meters or percent.
-    getInnerRadius() {
+    // Returns the current inner radius of the annulus. Units are in meters or percent.
+    getInnerRadius: function () {
         return this._mInnerRadius;
-    }
+    },
 
-    _updatePath() {
-        this._renderer._updateDonut(this);
-    }
+    _updatePath: function () {
+        this._renderer._updateAnnulus(this);
+    },
 
-    _project() {
+    _project: function () {
 
         var map = this._map,
             crs = map.options.crs;
 
-        if (crs.distance === CRS.Earth.distance) {
+        if (crs.distance === L.CRS.Earth.distance) {
 
             var outer = this._radiusCalculation(this._mRadius);
             this._point = outer.point;
@@ -87,15 +86,15 @@ export class Donut extends Circle {
         }
 
         this._updateBounds();
-    }
+    },
 
-    _radiusCalculation(radius) {
+    _radiusCalculation: function (radius) {
         var lng = this._latlng.lng,
             lat = this._latlng.lat,
             map = this._map;
 
         var d = Math.PI / 180,
-            latR = (radius / CRS.Earth.R) / d,
+            latR = (radius / L.CRS.Earth.R) / d,
             top = map.project([lat + latR, lng]),
             bottom = map.project([lat - latR, lng]),
             p = top.add(bottom).divideBy(2),
@@ -113,11 +112,14 @@ export class Donut extends Circle {
             radiusY: p.y - top.y
         };
     }
+});
+
+L.annulus = function (latlng, options) {
+    return new L.Annulus(latlng, options);
 };
 
-
-SVG.include({
-    _updateDonut(layer) {
+L.SVG.include({
+    _updateAnnulus: function (layer) {
         var p = layer._point,
             r = Math.max(Math.round(layer._radius), 1),
             r2 = Math.max(Math.round(layer._radiusY), 1) || r,
@@ -144,8 +146,8 @@ SVG.include({
     },
 });
 
-Canvas.include({
-    _updateDonut(layer) {
+L.Canvas.include({
+    _updateAnnulus: function (layer) {
 
         if (!this._drawing || layer._empty()) { return; }
 
